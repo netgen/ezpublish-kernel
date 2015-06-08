@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Time field value converter class
+ * File containing the Null converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -14,21 +14,18 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
-use eZ\Publish\Core\FieldType\Time\Type as TimeType;
-use eZ\Publish\Core\FieldType\FieldSettings;
-use DateTime;
 
 /**
- * Time field value converter class
+ * The Null converter does not perform any conversions at all.
  */
-class Time implements Converter
+class NullConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return \eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Time
+     * @return TextBlock
      */
     public static function create()
     {
@@ -43,8 +40,8 @@ class Time implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
-        $storageFieldValue->dataInt = ( $value->data !== null ? $value->data : null );
-        $storageFieldValue->sortKeyInt = (int)$value->sortKey;
+        // There is no contained data. All data is external. So we just do
+        // nothing here.
     }
 
     /**
@@ -55,13 +52,8 @@ class Time implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        if ( $value->dataInt === null )
-        {
-            return;
-        }
-
-        $fieldValue->data = $value->dataInt;
-        $fieldValue->sortKey = $value->sortKeyInt;
+        // There is no contained data. All data is external. So we just do
+        // nothing here.
     }
 
     /**
@@ -72,8 +64,8 @@ class Time implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
-        $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings["defaultType"];
-        $storageDef->dataInt2 = $fieldDef->fieldTypeConstraints->fieldSettings["useSeconds"] ? 1 : 0;
+        // There is no contained data. All data is external. So we just do
+        // nothing here.
     }
 
     /**
@@ -84,25 +76,8 @@ class Time implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
-        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
-            array(
-                "defaultType" => $storageDef->dataInt1,
-                "useSeconds" => (bool)$storageDef->dataInt2
-            )
-        );
-
-        // Building default value
-        switch ( $fieldDef->fieldTypeConstraints->fieldSettings["defaultType"] )
-        {
-            case TimeType::DEFAULT_CURRENT_TIME:
-                $dateTime = new DateTime();
-                $data = $dateTime->getTimestamp() - $dateTime->setTime( 0, 0, 0 )->getTimestamp();
-                break;
-            default:
-                $data = null;
-        }
-
-        $fieldDef->defaultValue->data = $data;
+        // There is no contained data. All data is external. So we just do
+        // nothing here.
     }
 
     /**
@@ -116,6 +91,6 @@ class Time implements Converter
      */
     public function getIndexColumn()
     {
-        return "sort_key_int";
+        return false;
     }
 }

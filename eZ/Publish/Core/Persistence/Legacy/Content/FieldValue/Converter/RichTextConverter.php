@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Null converter
+ * File containing the RichText converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -14,18 +14,17 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
+use eZ\Publish\Core\FieldType\FieldSettings;
+use eZ\Publish\Core\FieldType\RichText\Value;
 
-/**
- * The Null converter does not perform any conversions at all.
- */
-class Null implements Converter
+class RichTextConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return TextBlock
+     * @return \eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\RichTextConverter
      */
     public static function create()
     {
@@ -40,8 +39,7 @@ class Null implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
-        // There is no contained data. All data is external. So we just do
-        // nothing here.
+        $storageFieldValue->dataText = $value->data;
     }
 
     /**
@@ -52,32 +50,37 @@ class Null implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        // There is no contained data. All data is external. So we just do
-        // nothing here.
+        $fieldValue->data = $value->dataText ?: Value::EMPTY_VALUE;
     }
 
     /**
-     * Converts field definition data in $fieldDef into $storageFieldDef
+     * Converts field definition data from $fieldDefinition into $storageFieldDefinition
      *
-     * @param \eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition $fieldDef
-     * @param \eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition $storageDef
+     * @param \eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition $fieldDefinition
+     * @param \eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition $storageDefinition
      */
-    public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
+    public function toStorageFieldDefinition( FieldDefinition $fieldDefinition, StorageFieldDefinition $storageDefinition )
     {
-        // There is no contained data. All data is external. So we just do
-        // nothing here.
+        $storageDefinition->dataInt1 = $fieldDefinition->fieldTypeConstraints->fieldSettings['numRows'];
+        $storageDefinition->dataText2 = $fieldDefinition->fieldTypeConstraints->fieldSettings['tagPreset'];
     }
 
     /**
-     * Converts field definition data in $storageDef into $fieldDef
+     * Converts field definition data from $storageDefinition into $fieldDefinition
      *
-     * @param \eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition $storageDef
-     * @param \eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition $fieldDef
+     * @param \eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition $storageDefinition
+     * @param \eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition $fieldDefinition
      */
-    public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
+    public function toFieldDefinition( StorageFieldDefinition $storageDefinition, FieldDefinition $fieldDefinition )
     {
-        // There is no contained data. All data is external. So we just do
-        // nothing here.
+        $fieldDefinition->fieldTypeConstraints->fieldSettings = new FieldSettings(
+            array(
+                'numRows' => $storageDefinition->dataInt1,
+                'tagPreset' => $storageDefinition->dataText2
+            )
+        );
+
+        $fieldDefinition->defaultValue->data = Value::EMPTY_VALUE;
     }
 
     /**
@@ -87,10 +90,11 @@ class Null implements Converter
      * "sort_key_int" or "sort_key_string". This column is then used for
      * filtering and sorting for this type.
      *
-     * @return string
+     * @return string|false
      */
     public function getIndexColumn()
     {
         return false;
     }
+
 }

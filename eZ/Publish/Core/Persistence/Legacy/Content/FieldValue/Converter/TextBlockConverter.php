@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Keyword converter
+ * File containing the TextBlock converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -14,15 +14,16 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
+use eZ\Publish\Core\FieldType\FieldSettings;
 
-class Keyword implements Converter
+class TextBlockConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return Keyword
+     * @return TextBlock
      */
     public static function create()
     {
@@ -37,6 +38,8 @@ class Keyword implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
+        $storageFieldValue->dataText = $value->data;
+        $storageFieldValue->sortKeyString = $value->sortKey;
     }
 
     /**
@@ -47,7 +50,8 @@ class Keyword implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        $fieldValue->data = array();
+        $fieldValue->data = $value->dataText;
+        $fieldValue->sortKey = $value->sortKeyString;
     }
 
     /**
@@ -58,6 +62,10 @@ class Keyword implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
+        if ( isset( $fieldDef->fieldTypeConstraints->fieldSettings["textRows"] ) )
+        {
+            $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings["textRows"];
+        }
     }
 
     /**
@@ -68,6 +76,13 @@ class Keyword implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
+        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
+            array(
+                "textRows" => $storageDef->dataInt1
+            )
+        );
+        $fieldDef->defaultValue->data = null;
+        $fieldDef->defaultValue->sortKey = "";
     }
 
     /**
@@ -81,7 +96,6 @@ class Keyword implements Converter
      */
     public function getIndexColumn()
     {
-        return false;
+        return 'sort_key_string';
     }
-
 }
