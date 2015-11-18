@@ -1,7 +1,7 @@
 {
-    "name": "ezsystems/ezpublish-kernel",
-    "description": "eZ Publish API and kernel. This is the heart of eZ Publish 5.",
-    "homepage": "http://share.ez.no",
+    "name": "netgen/ezpublish-kernel",
+    "description": "eZ Publish API and kernel. This is the heart of eZ Publish 5. Maintained for bugfixes by Netgen.",
+    "homepage": "http://www.netgenlabs.com",
     "license": "GPL-2.0",
     "suggest": {
         "php-64bit": "For support of more than 30 languages, a 64bit php installation on all involved prod/dev machines is required"
@@ -46,8 +46,9 @@
     },
     "replace": {
         "ezsystems/ezpublish": "*",
-        "ezsystems/ezpublish-api": "self.version",
-        "ezsystems/ezpublish-spi": "self.version"
+        "ezsystems/ezpublish-api": "2014.11.*",
+        "ezsystems/ezpublish-spi": "2014.11.*",
+        "ezsystems/ezpublish-kernel": "2014.11.*"
     },
     "conflict": {
         "zendframework/zend-stdlib": ">=2.3"
