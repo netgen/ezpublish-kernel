@@ -1,5 +1,5 @@
 parameters:
-    ezpublish.kernel.root_dir: %kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel
+    ezpublish.kernel.root_dir: %kernel.root_dir%/../vendor/netgen/ezpublish-kernel
 
     # API
     ezpublish.api.repository.factory.class: eZ\Bundle\EzPublishCoreBundle\ApiLoader\RepositoryFactory

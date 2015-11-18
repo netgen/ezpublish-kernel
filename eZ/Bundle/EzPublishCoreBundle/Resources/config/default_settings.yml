@@ -49,10 +49,10 @@ parameters:
     # Built-in stylesheets are treated as custom for the sake of extensibility.
     ezsettings.default.fieldtypes.ezxml.custom_xsl:
         -
-            path: %kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_core.xsl
+            path: %kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_core.xsl
             priority: 0
         -
-            path: %kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_custom.xsl
+            path: %kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_custom.xsl
             priority: 0
 
     # FieldType settings
@@ -60,12 +60,12 @@ parameters:
     # Built-in stylesheets are treated as custom for the sake of extensibility.
     ezsettings.default.fieldtypes.ezrichtext.output_custom_xsl:
         -
-            path: %kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/output/core.xsl
+            path: %kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/output/core.xsl
             priority: 0
 
     ezsettings.default.fieldtypes.ezrichtext.edit_custom_xsl:
         -
-            path: %kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/edit/core.xsl
+            path: %kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/edit/core.xsl
             priority: 0
 
     ezsettings.default.fieldtypes.ezrichtext.input_custom_xsl: []

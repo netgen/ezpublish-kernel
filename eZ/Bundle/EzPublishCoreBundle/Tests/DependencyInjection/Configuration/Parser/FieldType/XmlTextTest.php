@@ -72,8 +72,8 @@ class XmlTextTest extends AbstractParserTestCase
                 array(
                     'fieldtypes.ezxml.custom_xsl' => array(
                         // Default settings will be added
-                        array( 'path' => '%kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_core.xsl', 'priority' => 0 ),
-                        array( 'path' => '%kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_custom.xsl', 'priority' => 0 ),
+                        array( 'path' => '%kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_core.xsl', 'priority' => 0 ),
+                        array( 'path' => '%kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_custom.xsl', 'priority' => 0 ),
                         array( 'path' => '/foo/bar.xsl', 'priority' => 123 ),
                         array( 'path' => '/foo/custom.xsl', 'priority' => -10 ),
                         array( 'path' => '/another/custom.xsl', 'priority' => 27 ),

@@ -50,11 +50,11 @@ class RichTextTest extends AbstractParserTestCase
             'fieldtypes.ezxml.custom_xsl',
             array(
                 0 => array(
-                    'path' => '%kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_core.xsl',
+                    'path' => '%kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_core.xsl',
                     'priority' => 0,
                 ),
                 1 => array(
-                    'path' => '%kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_custom.xsl',
+                    'path' => '%kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/XmlText/Input/Resources/stylesheets/eZXml2Html5_custom.xsl',
                     'priority' => 0,
                 ),
             ),
@@ -99,7 +99,7 @@ class RichTextTest extends AbstractParserTestCase
                 array(
                     'fieldtypes.ezrichtext.output_custom_xsl' => array(
                         // Default settings will be added
-                        array( 'path' => '%kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/output/core.xsl', 'priority' => 0 ),
+                        array( 'path' => '%kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/output/core.xsl', 'priority' => 0 ),
                         array( 'path' => '/foo/bar.xsl', 'priority' => 123 ),
                         array( 'path' => '/foo/custom.xsl', 'priority' => -10 ),
                         array( 'path' => '/another/custom.xsl', 'priority' => 27 ),
@@ -121,7 +121,7 @@ class RichTextTest extends AbstractParserTestCase
                 array(
                     'fieldtypes.ezrichtext.edit_custom_xsl' => array(
                         // Default settings will be added
-                        array( 'path' => '%kernel.root_dir%/../vendor/ezsystems/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/edit/core.xsl', 'priority' => 0 ),
+                        array( 'path' => '%kernel.root_dir%/../vendor/netgen/ezpublish-kernel/eZ/Publish/Core/FieldType/RichText/Resources/stylesheets/docbook/xhtml5/edit/core.xsl', 'priority' => 0 ),
                         array( 'path' => '/foo/bar.xsl', 'priority' => 123 ),
                         array( 'path' => '/foo/custom.xsl', 'priority' => -10 ),
                         array( 'path' => '/another/custom.xsl', 'priority' => 27 ),
