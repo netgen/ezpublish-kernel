@@ -1,6 +1,6 @@
 {
     "name": "netgen/ezpublish-kernel",
-    "description": "eZ Publish API and kernel. This is the heart of eZ Publish 5. Maintained for bugfixes by Netgen.",
+    "description": "eZ Publish API and kernel. This is the heart of eZ Publish 5. This is a v2014.11 kernel, maintained for bugfixes by Netgen.",
     "homepage": "http://www.netgenlabs.com",
     "license": "GPL-2.0",
     "suggest": {
