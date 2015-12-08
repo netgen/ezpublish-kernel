@@ -476,6 +476,16 @@ class ContentExtension extends Twig_Extension
                 );
             }
         }
+        catch ( InvalidArgumentException $e )
+        {
+            if ( isset( $this->logger ) )
+            {
+                $this->logger->error(
+                    "Couldn't create variation '{$variationName}' for image with id {$field->value->id} because an image could not be created from the given input"
+                );
+            }
+        }
+        return null;
     }
 
     /**
