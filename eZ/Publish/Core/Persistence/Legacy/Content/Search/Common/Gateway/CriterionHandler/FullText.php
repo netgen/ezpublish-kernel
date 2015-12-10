@@ -27,7 +27,7 @@ class FullText extends CriterionHandler
      * @var array
      */
     protected $configuration = array(
-        'searchThresholdValue' => 20,
+        'searchThresholdValue' => 100000,
         'enableWildcards' => true,
         'commands' => array(
             'apostrophe_normalize',
