@@ -16,6 +16,7 @@ use eZ\Publish\Core\MVC\Symfony\Event\ScopeChangeEvent;
 use eZ\Publish\Core\MVC\Symfony\MVCEvents;
 use eZ\Publish\Core\MVC\Symfony\SiteAccess\SiteAccessAware;
 use eZ\Publish\Core\MVC\Symfony\SiteAccess;
+use eZ\Publish\Core\MVC\Symfony\SiteAccess\SiteAccessRouterInterface;
 use eZ\Publish\Core\Repository\Values\Content\Location;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -46,11 +47,17 @@ class ContentPreviewHelper implements SiteAccessAware
      */
     private $configResolver;
 
+    /**
+     * @var \eZ\Publish\Core\MVC\Symfony\SiteAccess\SiteAccessRouterInterface
+     */
+    protected $siteAccessRouter;
+
     public function __construct(
         ContentService $contentService,
         LocationService $locationService,
         EventDispatcherInterface $eventDispatcher,
-        ConfigResolverInterface $configResolver
+        ConfigResolverInterface $configResolver,
+        SiteAccessRouterInterface $siteAccessRouter
     )
     {
         $this->contentService = $contentService;
@@ -58,6 +65,7 @@ class ContentPreviewHelper implements SiteAccessAware
 
         $this->eventDispatcher = $eventDispatcher;
         $this->configResolver = $configResolver;
+        $this->siteAccessRouter = $siteAccessRouter;
     }
 
     public function setSiteAccess( SiteAccess $siteAccess = null )
@@ -84,7 +92,7 @@ class ContentPreviewHelper implements SiteAccessAware
      */
     public function changeConfigScope( $siteAccessName )
     {
-        $event = new ScopeChangeEvent( new SiteAccess( $siteAccessName, 'preview' ) );
+        $event = new ScopeChangeEvent( $this->siteAccessRouter->matchByName( $siteAccessName ) );
         $this->eventDispatcher->dispatch( MVCEvents::CONFIG_SCOPE_CHANGE, $event );
 
         return $event->getSiteAccess();

@@ -37,6 +37,11 @@ class ContentPreviewHelperTest extends PHPUnit_Framework_TestCase
      */
     private $configResolver;
 
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $siteAccessRouter;
+
     protected function setUp()
     {
         parent::setUp();
@@ -44,12 +49,20 @@ class ContentPreviewHelperTest extends PHPUnit_Framework_TestCase
         $this->locationService = $this->getMock( 'eZ\Publish\API\Repository\LocationService' );
         $this->eventDispatcher = $this->getMock( 'Symfony\Component\EventDispatcher\EventDispatcherInterface' );
         $this->configResolver = $this->getMock( 'eZ\Publish\Core\MVC\ConfigResolverInterface' );
+        $this->siteAccessRouter = $this->getMock('eZ\Publish\Core\MVC\Symfony\SiteAccess\SiteAccessRouterInterface');
     }
 
     public function testChangeConfigScope()
     {
         $newSiteAccessName = 'test';
-        $newSiteAccess = new SiteAccess( $newSiteAccessName, 'preview' );
+        $newSiteAccess = new SiteAccess( $newSiteAccessName );
+
+        $this->siteAccessRouter
+            ->expects( $this->once() )
+            ->method( 'matchByName' )
+            ->with( $this->equalTo( $newSiteAccessName ) )
+            ->willReturn( $newSiteAccess );
+
         $event = new ScopeChangeEvent( $newSiteAccess );
         $this->eventDispatcher
             ->expects( $this->once() )
@@ -61,7 +74,8 @@ class ContentPreviewHelperTest extends PHPUnit_Framework_TestCase
             $this->contentService,
             $this->locationService,
             $this->eventDispatcher,
-            $this->configResolver
+            $this->configResolver,
+            $this->siteAccessRouter
         );
         $helper->setSiteAccess( $originalSiteAccess );
         $this->assertEquals(
@@ -83,7 +97,8 @@ class ContentPreviewHelperTest extends PHPUnit_Framework_TestCase
             $this->contentService,
             $this->locationService,
             $this->eventDispatcher,
-            $this->configResolver
+            $this->configResolver,
+            $this->siteAccessRouter
         );
         $helper->setSiteAccess( $originalSiteAccess );
         $this->assertEquals(
@@ -118,7 +133,8 @@ class ContentPreviewHelperTest extends PHPUnit_Framework_TestCase
             $this->contentService,
             $this->locationService,
             $this->eventDispatcher,
-            $this->configResolver
+            $this->configResolver,
+            $this->siteAccessRouter
         );
         $location = $helper->getPreviewLocation( $contentId );
         $this->assertInstanceOf( 'eZ\Publish\API\Repository\Values\Content\Location', $location );
@@ -153,7 +169,8 @@ class ContentPreviewHelperTest extends PHPUnit_Framework_TestCase
             $this->contentService,
             $this->locationService,
             $this->eventDispatcher,
-            $this->configResolver
+            $this->configResolver,
+            $this->siteAccessRouter
         );
         $returnedLocation = $helper->getPreviewLocation( $contentId );
         $this->assertSame( $location, $returnedLocation );
