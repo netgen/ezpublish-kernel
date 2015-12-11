@@ -193,7 +193,7 @@ class Repository implements RepositoryInterface
      */
     public function sudo( \Closure $callback )
     {
-        return $this->repository->sudo( $callback );
+        return $this->repository->sudo( $callback, $this );
     }
 
     /**
