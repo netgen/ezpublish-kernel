@@ -61,7 +61,7 @@ class RelationProcessorTest extends BaseServiceMockTest
         $fieldTypeMock = $this->getMock( "eZ\\Publish\\SPI\\FieldType\\FieldType" );
         $contentMock = $this->getMock(
             "eZ\\Publish\\API\\Repository\\Values\\Content\\Content",
-            array( "__get", "getFields", "getFieldValue", "getVersionInfo", "getFieldsByLanguage" )
+            array( "__get", "getFields", "getFieldValue", "getVersionInfo", "getFieldsByLanguage", "getField" )
         );
 
         $contentMock->expects( $this->any() )
