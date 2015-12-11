@@ -283,12 +283,13 @@ class Repository implements RepositoryInterface
      * @access private This function is not official API atm, and can change anytime.
      *
      * @param \Closure $callback
+     * @param \eZ\Publish\API\Repository\Repository $outerRepository
      *
      * @throws \RuntimeException Thrown on recursive sudo() use.
      * @throws \Exception Re throws exceptions thrown inside $callback
      * @return mixed
      */
-    public function sudo( \Closure $callback )
+    public function sudo( \Closure $callback, RepositoryInterface $outerRepository = null )
     {
         if ( $this->sudoFlag === true )
             throw new RuntimeException( "Recursive sudo use detected, abort abort!" );
@@ -296,7 +297,7 @@ class Repository implements RepositoryInterface
         $this->sudoFlag = true;
         try
         {
-            $returnValue = $callback( $this );
+            $returnValue = $callback( $outerRepository !== null ? $outerRepository : $this );
         }
         catch ( Exception $e  )
         {
