@@ -36,7 +36,7 @@ matrix:
     - php: 5.5
       env: TEST_CONFIG="phpunit-integration-legacy.xml" DB="mysql" DATABASE="mysql://root@localhost/$DB_NAME"
     - php: 5.5
-      env: env: SOLR_VERSION="4.9.1" TEST_CONFIG="phpunit-integration-legacy-solr.xml"
+      env: SOLR_VERSION="4.9.1" TEST_CONFIG="phpunit-integration-legacy-solr.xml"
     - php: 5.5
       env: ELASTICSEARCH_VERSION="1.4.0" TEST_CONFIG="phpunit-integration-legacy-elasticsearch.xml"
 
