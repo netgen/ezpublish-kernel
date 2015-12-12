@@ -70,7 +70,7 @@ before_script:
 script: "php -d date.timezone=$TEST_TIMEZONE -d memory_limit=-1 vendor/bin/phpunit -c $TEST_CONFIG"
 
 # disable mail notifications
-notification:
+notifications:
   email: false
 
 # reduce depth (history) of git checkout
