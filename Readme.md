@@ -1,5 +1,5 @@
 # eZ Publish 5.x Kernel
-[![Build Status](https://travis-ci.org/ezsystems/ezpublish-kernel.png?branch=master)](https://travis-ci.org/ezsystems/ezpublish-kernel)
+[![Build Status](https://travis-ci.org/netgen/ezpublish-kernel.png?branch=master)](https://travis-ci.org/netgen/ezpublish-kernel)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0885c0ce-4b9f-4b89-aa9c-e8f9f7a315e0/big.png)](https://insight.sensiolabs.com/projects/0885c0ce-4b9f-4b89-aa9c-e8f9f7a315e0)
 
@@ -87,7 +87,7 @@ Currently SPI consists of:
 You can also run tests (slower) on mysql or postgres, see [.travis.yml](.travis.yml) for how.
 
 ### Installation
-* Clone this repo `git clone https://github.com/ezsystems/ezpublish-kernel.git`
+* Clone this repo `git clone https://github.com/netgen/ezpublish-kernel.git`
 * Enter directory `cd ezpublish-kernel`
 * Get [Composer](http://getcomposer.org/download/) using curl `curl -s http://getcomposer.org/installer | php`
 * Install dev dependencies: `php composer.phar install --prefer-dist --dev`
@@ -96,7 +96,7 @@ You can also run tests (slower) on mysql or postgres, see [.travis.yml](.travis.
   * phpunit.xml  *unit test xml configuration*
   * phpunit-integration-legacy.xml  *integration test xml configuration for running integration tests with Legacy Storage engine*
 
-This should produce similar result as [travis](https://travis-ci.org/ezsystems/ezpublish-kernel).
+This should produce similar result as [travis](https://travis-ci.org/netgen/ezpublish-kernel).
 If you don't double check [.travis.yml](.travis.yml) for up-to-date info on how travis is setup.
 
 ## Issue tracker
