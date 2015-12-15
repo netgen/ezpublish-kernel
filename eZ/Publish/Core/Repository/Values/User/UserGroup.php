@@ -86,7 +86,7 @@ class UserGroup extends APIUserGroup
      */
     public function getField( $fieldDefIdentifier, $languageCode = null )
     {
-        return $this->content->getField( $fieldDefIdentifier, $language );
+        return $this->content->getField( $fieldDefIdentifier, $languageCode );
     }
 
     /**
