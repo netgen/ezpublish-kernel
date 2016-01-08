@@ -401,4 +401,16 @@ class IOService implements IOServiceInterface
             throw new InvalidBinaryFileIdException( $binaryFileId );
         }
     }
+
+    /**
+     * Deletes a directory.
+     *
+     * @param string $path
+     */
+    public function deleteDirectory( $path )
+    {
+        $prefixedUri = $this->getPrefixedUri( $path );
+        $this->metadataHandler->deleteDirectory( $prefixedUri );
+        $this->binarydataHandler->deleteDirectory( $prefixedUri );
+    }
 }
