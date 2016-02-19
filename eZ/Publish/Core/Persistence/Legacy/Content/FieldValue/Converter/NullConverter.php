@@ -18,7 +18,7 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
 /**
  * The Null converter does not perform any conversions at all.
  */
-class Null implements Converter
+class NullConverter implements Converter
 {
     /**
      * Factory for current class
