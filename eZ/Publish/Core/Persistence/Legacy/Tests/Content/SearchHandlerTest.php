@@ -19,10 +19,10 @@ use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use eZ\Publish\SPI\Persistence\Content\VersionInfo;
 use eZ\Publish\SPI\Persistence\Content\ContentInfo;
 use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\ConverterRegistry;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\DateAndTime;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Integer;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\TextLine;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Url;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\DateAndTimeConverter;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\IntegerConverter;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\TextLineConverter;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\UrlConverter;
 
 /**
  * Test case for ContentSearchHandler
@@ -176,11 +176,11 @@ class SearchHandlerTest extends LanguageAwareTestCase
                             $this->getDatabaseHandler(),
                             $this->fieldRegistry = new ConverterRegistry(
                                 array(
-                                    'ezdatetime' => new DateAndTime(),
-                                    'ezinteger' => new Integer(),
-                                    'ezstring' => new TextLine(),
-                                    'ezprice' => new Integer(),
-                                    'ezurl' => new Url()
+                                    'ezdatetime' => new DateAndTimeConverter(),
+                                    'ezinteger' => new IntegerConverter(),
+                                    'ezstring' => new TextLineConverter(),
+                                    'ezprice' => new IntegerConverter(),
+                                    'ezurl' => new UrlConverter()
                                 )
                             ),
                             new Content\Search\Common\Gateway\CriterionHandler\FieldValue\Converter(

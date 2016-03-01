@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the TextBlock converter
+ * File containing the Image converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -12,18 +12,18 @@ namespace eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter;
 use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
+use eZ\Publish\SPI\Persistence\Content\FieldTypeConstraints;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
-use eZ\Publish\Core\FieldType\FieldSettings;
 
-class TextBlock implements Converter
+class BinaryFileConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return TextBlock
+     * @return BinaryFileConverter
      */
     public static function create()
     {
@@ -38,8 +38,6 @@ class TextBlock implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
-        $storageFieldValue->dataText = $value->data;
-        $storageFieldValue->sortKeyString = $value->sortKey;
     }
 
     /**
@@ -50,8 +48,6 @@ class TextBlock implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        $fieldValue->data = $value->dataText;
-        $fieldValue->sortKey = $value->sortKeyString;
     }
 
     /**
@@ -62,10 +58,9 @@ class TextBlock implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
-        if ( isset( $fieldDef->fieldTypeConstraints->fieldSettings["textRows"] ) )
-        {
-            $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings["textRows"];
-        }
+        $storageDef->dataInt1 = ( isset( $fieldDef->fieldTypeConstraints->validators['FileSizeValidator']['maxFileSize'] )
+            ? $fieldDef->fieldTypeConstraints->validators['FileSizeValidator']['maxFileSize']
+            : 0 );
     }
 
     /**
@@ -76,13 +71,17 @@ class TextBlock implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
-        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
+        $fieldDef->fieldTypeConstraints = new FieldTypeConstraints(
             array(
-                "textRows" => $storageDef->dataInt1
+                'validators' => array(
+                    'FileSizeValidator' => array(
+                        'maxFileSize' => ( $storageDef->dataInt1 != 0
+                            ? $storageDef->dataInt1
+                            : false ),
+                    )
+                )
             )
         );
-        $fieldDef->defaultValue->data = null;
-        $fieldDef->defaultValue->sortKey = "";
     }
 
     /**
@@ -96,6 +95,7 @@ class TextBlock implements Converter
      */
     public function getIndexColumn()
     {
+        // @todo: Correct?
         return 'sort_key_string';
     }
 }
