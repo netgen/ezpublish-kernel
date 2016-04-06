@@ -275,7 +275,6 @@ class Loader extends ContainerAware
         $this->webHandler = null;
         $this->cliHandler = null;
 
-        $this->container->set( 'ezpublish_legacy.kernel', null );
         $this->container->set( 'ezpublish_legacy.kernel.lazy', null );
         $this->container->set( 'ezpublish_legacy.kernel_handler.web', null );
         $this->container->set( 'ezpublish_legacy.kernel_handler.cli', null );
