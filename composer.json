@@ -49,7 +49,7 @@
         "ezsystems/ezpublish-spi": "2014.11.*",
         "ezsystems/ezpublish-kernel": "2014.11.*"
     },
-	"autoload": {
+    "autoload": {
         "psr-0": {
             "eZ": ""
         }
