@@ -13,6 +13,7 @@ use eZ\Bundle\EzPublishLegacyBundle\DependencyInjection\Compiler\LegacyBundlesPa
 use eZ\Bundle\EzPublishLegacyBundle\DependencyInjection\Security\SSOFactory;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use eZ\Bundle\EzPublishLegacyBundle\DependencyInjection\Compiler\LegacyPass;
+use eZ\Bundle\EzPublishLegacyBundle\DependencyInjection\Compiler\LegacySessionPass;
 use eZ\Bundle\EzPublishLegacyBundle\DependencyInjection\Compiler\TwigPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -45,6 +46,7 @@ class EzPublishLegacyBundle extends Bundle
         $container->addCompilerPass( new LegacyPass() );
         $container->addCompilerPass( new TwigPass() );
         $container->addCompilerPass( new LegacyBundlesPass( $this->kernel ) );
+        $container->addCompilerPass( new LegacySessionPass() );
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $securityExtension */
         $securityExtension = $container->getExtension( 'security' );
