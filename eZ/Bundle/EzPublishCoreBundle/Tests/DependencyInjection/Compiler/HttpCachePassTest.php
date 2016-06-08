@@ -43,6 +43,7 @@ class HttpCachePassTest extends AbstractCompilerPassTestCase
             $varnishProxyClient->getFactoryService()
         );
         $this->assertSame( 'buildProxyClient', $varnishProxyClient->getFactoryMethod() );
+        $this->assertTrue( $varnishProxyClient->isLazy() );
 
         $this->assertContainerBuilderHasServiceDefinitionWithArgument(
             'ezpublish.http_cache.cache_manager',

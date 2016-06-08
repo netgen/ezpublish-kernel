@@ -121,4 +121,3 @@ services:
       arguments: [@ezpublish.route_reference.generator]
       tags:
         - {name: twig.extension}
-
