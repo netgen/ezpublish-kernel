@@ -218,6 +218,9 @@ EOT;
                                 ->ifTrue(
                                     function ( $v )
                                     {
+                                        if (empty($v)) {
+                                            return false;
+                                        }
                                         $basename = basename( $v );
                                         // If there is a space in the basename, just drop it and everything after it.
                                         if ( ( $wsPos = strpos( $basename, ' ' ) ) !== false )
