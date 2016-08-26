@@ -224,6 +224,7 @@ class Configuration extends ContainerAware implements EventSubscriberInterface
         $ezpEvent->attach( 'content/section/cache', array( $this->persistenceCachePurger, 'section' ) );
         $ezpEvent->attach( 'user/cache/all', array( $this->persistenceCachePurger, 'user' ) );
         $ezpEvent->attach( 'content/translations/cache', array( $this->persistenceCachePurger, 'languages' ) );
+        $ezpEvent->attach( 'content/state/assign', array( $this->persistenceCachePurger, 'stateAssign' ) );
 
         // Register image alias removal listeners
         $ezpEvent->attach( 'image/removeAliases', array( $this->aliasCleaner, 'removeAliases' ) );
