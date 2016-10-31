@@ -292,7 +292,7 @@ class Type extends FieldType
                             self::TAG_PRESET_DEFAULT,
                             self::TAG_PRESET_SIMPLE_FORMATTING
                         );
-                        if ( !in_array( $value, $definedTagPresets, true ) )
+                        if ( !empty( $value ) && !in_array( $value, $definedTagPresets, true ) )
                         {
                             $validationErrors[] = new ValidationError(
                                 "Setting '%setting%' is of unknown tag preset",

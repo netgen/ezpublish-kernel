@@ -55,3 +55,10 @@ services:
 
     ezpublish.http_cache.purge_client:
         alias: ezpublish.http_cache.purge_client.local
+
+    ezpublish.cache_warmer.config_resolver_cleanup:
+        class: eZ\Bundle\EzPublishCoreBundle\Cache\Warmer\ConfigResolverCleanup
+        calls:
+            - [setContainer, ["@service_container"]]
+        tags:
+            - { name: kernel.cache_warmer }
