@@ -38,6 +38,10 @@ class HttpCachePass implements CompilerPassInterface
             ->setFactoryService( 'ezpublish.http_cache.proxy_client.varnish.factory' )
             ->setFactoryMethod( 'buildProxyClient' );
 
+        // Set it lazy as it can be loaded during cache warming and factory depends on ConfigResolver while cache warming
+        // occurs before SA matching.
+        $varnishClientDef->setLazy( true );
+
         // Forcing cache manager to use Varnish proxy client, for BAN support.
         $cacheManagerDef = $container->findDefinition( 'ezpublish.http_cache.cache_manager' );
         $cacheManagerDef->replaceArgument( 0, new Reference( 'fos_http_cache.proxy_client.varnish' ) );

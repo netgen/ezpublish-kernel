@@ -29,6 +29,7 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use InvalidArgumentException;
 use LogicException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UrlAliasRouter implements ChainedRouterInterface, RequestMatcherInterface
 {
@@ -116,7 +117,7 @@ class UrlAliasRouter implements ChainedRouterInterface, RequestMatcherInterface
     {
         try
         {
-            $requestedPath = rawurldecode( $request->attributes->get( 'semanticPathinfo', $request->getPathInfo() ) );
+            $requestedPath = $request->attributes->get( 'semanticPathinfo', $request->getPathInfo() );
             $urlAlias = $this->getUrlAlias( $requestedPath );
             if ( $this->rootLocationId === null )
             {
@@ -302,7 +303,7 @@ class UrlAliasRouter implements ChainedRouterInterface, RequestMatcherInterface
      *
      * @param string|\eZ\Publish\API\Repository\Values\Content\Location $name The name of the route or a Location instance
      * @param mixed $parameters An array of parameters
-     * @param boolean $absolute Whether to generate an absolute URL
+     * @param int $referenceType The type of reference to be generated (one of the constants)
      *
      * @throws \LogicException
      * @throws \Symfony\Component\Routing\Exception\RouteNotFoundException
@@ -312,12 +313,12 @@ class UrlAliasRouter implements ChainedRouterInterface, RequestMatcherInterface
      *
      * @api
      */
-    public function generate( $name, $parameters = array(), $absolute = false )
+    public function generate( $name, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH )
     {
         // Direct access to Location
         if ( $name instanceof Location )
         {
-            return $this->generator->generate( $name, $parameters, $absolute );
+            return $this->generator->generate( $name, $parameters, $referenceType );
         }
 
         // Normal route name
@@ -335,7 +336,7 @@ class UrlAliasRouter implements ChainedRouterInterface, RequestMatcherInterface
 
                 $location = isset( $parameters['location'] ) ? $parameters['location'] : $this->locationService->loadLocation( $parameters['locationId'] );
                 unset( $parameters['location'], $parameters['locationId'], $parameters['viewType'], $parameters['layout'] );
-                return $this->generator->generate( $location, $parameters, $absolute );
+                return $this->generator->generate( $location, $parameters, $referenceType );
             }
 
             if ( isset( $parameters['contentId'] ) )
@@ -351,7 +352,7 @@ class UrlAliasRouter implements ChainedRouterInterface, RequestMatcherInterface
                 return $this->generator->generate(
                     $this->locationService->loadLocation( $contentInfo->mainLocationId ),
                     $parameters,
-                    $absolute
+                    $referenceType
                 );
             }
 

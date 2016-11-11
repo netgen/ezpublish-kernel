@@ -10,7 +10,7 @@
 namespace eZ\Bundle\EzPublishLegacyBundle\Composer;
 
 use Sensio\Bundle\DistributionBundle\Composer\ScriptHandler as DistributionBundleScriptHandler;
-use Composer\Script\CommandEvent;
+use Composer\Script\Event;
 
 class ScriptHandler extends DistributionBundleScriptHandler
 {
@@ -24,9 +24,9 @@ class ScriptHandler extends DistributionBundleScriptHandler
      * strict user permission checks (which can be done on Windows 7 but not on Windows
      * Vista).
      *
-     * @param $event CommandEvent A instance
+     * @param $event Event A instance
      */
-    public static function installAssets( CommandEvent $event )
+    public static function installAssets( Event $event )
     {
         $options = self::getOptions( $event );
         $appDir = $options['symfony-app-dir'];
@@ -57,7 +57,7 @@ class ScriptHandler extends DistributionBundleScriptHandler
         static::executeCommand( $event, $appDir, 'ezpublish:legacy:assets_install ' . $symlink . escapeshellarg( $webDir ) );
     }
 
-    public static function installLegacyBundlesExtensions( CommandEvent $event )
+    public static function installLegacyBundlesExtensions( Event $event )
     {
         $options = self::getOptions( $event );
         $appDir = $options['symfony-app-dir'];
@@ -75,5 +75,33 @@ class ScriptHandler extends DistributionBundleScriptHandler
         }
 
         static::executeCommand( $event, $appDir, 'ezpublish:legacybundles:install_extensions ' . $symlink );
+    }
+
+    public static function generateAutoloads( Event $event )
+    {
+        $options = self::getOptions( $event );
+        $appDir = $options['symfony-app-dir'];
+
+        if ( !is_dir( $appDir ) )
+        {
+            echo 'The symfony-app-dir (' . $appDir . ') specified in composer.json was not found in ' . getcwd() . ', can not generate autoloads.' . PHP_EOL;
+            return;
+        }
+
+        static::executeCommand( $event, $appDir, 'ezpublish:legacy:script bin/php/ezpgenerateautoloads.php' );
+    }
+
+    public static function generateKernelOverrideAutoloads( Event $event )
+    {
+        $options = self::getOptions( $event );
+        $appDir = $options['symfony-app-dir'];
+
+        if ( !is_dir( $appDir ) )
+        {
+            echo 'The symfony-app-dir (' . $appDir . ') specified in composer.json was not found in ' . getcwd() . ', can not generate kernel override autoloads.' . PHP_EOL;
+            return;
+        }
+
+        static::executeCommand( $event, $appDir, 'ezpublish:legacy:script bin/php/ezpgenerateautoloads.php -o' );
     }
 }

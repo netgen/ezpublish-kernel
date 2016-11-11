@@ -13,7 +13,7 @@ use Symfony\Cmf\Component\Routing\ChainRouter as BaseChainRouter;
 
 class ChainRouter extends BaseChainRouter
 {
-    public function generate( $name, $parameters = array(), $absolute = false )
+    public function generate( $name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH )
     {
         if ( $name instanceof RouteReference )
         {
@@ -21,6 +21,6 @@ class ChainRouter extends BaseChainRouter
             $name = $name->getRoute();
         }
 
-        return parent::generate( $name, $parameters, $absolute );
+        return parent::generate( $name, $parameters, $referenceType );
     }
 }

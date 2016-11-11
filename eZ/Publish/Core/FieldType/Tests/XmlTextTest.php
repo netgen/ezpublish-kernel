@@ -92,6 +92,56 @@ class XmlTextTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \eZ\Publish\Core\FieldType\XmlText\Type::validateFieldSettings
+     * @dataProvider providerForTestValidateFieldSettingsValid
+     */
+    public function testValidateFieldSettingsValid( $settings )
+    {
+        $validationResult = $this->getFieldType()->validateFieldSettings( $settings );
+
+        $this->assertInternalType(
+            'array',
+            $validationResult,
+            'The method validateFieldSettings() must return an array.'
+        );
+        $this->assertEquals(
+            array(),
+            $validationResult,
+            'validateFieldSettings() considered the input settings invalid, while they should be valid: '
+        );
+
+    }
+
+    /**
+     * @covers \eZ\Publish\Core\FieldType\XmlText\Type::validateFieldSettings
+     * @dataProvider providerForTestValidateFieldSettingsInvalid
+     */
+    public function testValidateFieldSettingsInvalid( $settings )
+    {
+        $validationResult = $this->getFieldType()->validateFieldSettings( $settings );
+
+        $this->assertInternalType(
+            'array',
+            $validationResult,
+            'The method validateFieldSettings() must return an array.'
+        );
+
+        $this->assertNotEquals(
+            array(),
+            $validationResult,
+            'validateFieldSettings() considered the input settings valid, while they should be invalid.'
+        );
+
+        foreach ( $validationResult as $actualResultElement ) {
+            $this->assertInstanceOf(
+                'eZ\\Publish\\SPI\\FieldType\\ValidationError',
+                $actualResultElement,
+                'Validation result of incorrect type.'
+            );
+        }
+    }
+
+    /**
      * @covers \eZ\Publish\Core\FieldType\XmlText\Type::acceptValue
      * @expectedException \eZ\Publish\API\Repository\Exceptions\InvalidArgumentException
      */
@@ -152,6 +202,48 @@ class XmlTextTest extends PHPUnit_Framework_TestCase
 
         self::assertInstanceOf( 'DOMDocument', $fieldValue->data );
         self::assertSame( $xmlDoc->saveXML(), $fieldValue->data->saveXML() );
+    }
+
+    public static function providerForTestValidateFieldSettingsValid()
+    {
+        return array(
+            array(
+                array(
+                    'numRows' => 10,
+                    'tagPreset' => ''
+                )
+            ),
+            array(
+                array(
+                    'numRows' => 10,
+                    'tagPreset' => 0,
+                )
+            ),
+        );
+    }
+
+    public static function providerForTestValidateFieldSettingsInvalid()
+    {
+        return array(
+            array(
+                array(
+                    'numRows' => '',
+                    'tagPreset' => ''
+                ),
+            ),
+            array(
+                array(
+                    'numRows' => 10,
+                    'tagPreset' => 'a'
+                )
+            ),
+            array(
+                array(
+                    'numRows' => 'a',
+                    'tagPreset' => 0
+                )
+            )
+        );
     }
 
     public static function providerForTestAcceptValueValidFormat()
