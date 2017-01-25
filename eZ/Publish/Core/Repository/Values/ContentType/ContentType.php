@@ -146,7 +146,7 @@ class ContentType extends APIContentType
      */
     public function getDescription( $languageCode )
     {
-        if ( isset( $languageCode, $this->descriptions ) )
+        if ( isset( $this->descriptions[$languageCode] ) )
         {
             return $this->descriptions[$languageCode];
         }
