@@ -87,12 +87,12 @@ class LocationAwareStore extends Store implements ContentPurger
             return parent::getPath( $key );
 
         $prefix = '';
-        if ( ( $pos = strrpos( $key, '/' ) ) !== false )
+        if ( ( $pos = strrpos( $key, DIRECTORY_SEPARATOR ) ) !== false )
         {
             $prefix = substr( $key, 0, $pos ) . DIRECTORY_SEPARATOR;
             $key = substr( $key, $pos + 1 );
 
-            list( $locationCacheDir, $locationId ) = explode( '/', $prefix );
+            list( $locationCacheDir, $locationId ) = explode( DIRECTORY_SEPARATOR, $prefix );
             unset( $locationCacheDir );
             // If cache purge is in progress, serve stale cache instead of regular cache.
             // We first check for a global cache purge, then for the current location.
