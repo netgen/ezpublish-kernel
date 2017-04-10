@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Image converter
+ * File containing the Keyword converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -12,18 +12,17 @@ namespace eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter;
 use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
-use eZ\Publish\SPI\Persistence\Content\FieldTypeConstraints;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
 
-class BinaryFile implements Converter
+class KeywordConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return Image
+     * @return Keyword
      */
     public static function create()
     {
@@ -48,6 +47,7 @@ class BinaryFile implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
+        $fieldValue->data = array();
     }
 
     /**
@@ -58,9 +58,6 @@ class BinaryFile implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
-        $storageDef->dataInt1 = ( isset( $fieldDef->fieldTypeConstraints->validators['FileSizeValidator']['maxFileSize'] )
-            ? $fieldDef->fieldTypeConstraints->validators['FileSizeValidator']['maxFileSize']
-            : 0 );
     }
 
     /**
@@ -71,17 +68,6 @@ class BinaryFile implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
-        $fieldDef->fieldTypeConstraints = new FieldTypeConstraints(
-            array(
-                'validators' => array(
-                    'FileSizeValidator' => array(
-                        'maxFileSize' => ( $storageDef->dataInt1 != 0
-                            ? $storageDef->dataInt1
-                            : false ),
-                    )
-                )
-            )
-        );
     }
 
     /**
@@ -95,7 +81,7 @@ class BinaryFile implements Converter
      */
     public function getIndexColumn()
     {
-        // @todo: Correct?
-        return 'sort_key_string';
+        return false;
     }
+
 }

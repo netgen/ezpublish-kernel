@@ -18,7 +18,7 @@ use eZ\Publish\Core\FieldType\FieldSettings;
 use eZ\Publish\Core\FieldType\XmlText\Value;
 use DOMDocument;
 
-class XmlText implements Converter
+class XmlTextConverter implements Converter
 {
     /**
      * Factory for current class

@@ -99,6 +99,42 @@ class SearchHandlerSortTest extends LanguageAwareTestCase
         );
     }
 
+    protected $contentTypeHandler;
+
+    protected function getContentTypeHandler()
+    {
+        if ( !isset( $this->contentTypeHandler ) )
+        {
+            $this->contentTypeHandler = new ContentTypeHandler(
+                new ContentTypeGateway(
+                    $this->getDatabaseHandler(),
+                    $this->getLanguageMaskGenerator()
+                ),
+                new ContentTypeMapper(
+                    new ConverterRegistry(
+                        array(
+                            'ezdatetime' => new Converter\DateAndTimeConverter(),
+                            'ezinteger' => new Converter\IntegerConverter(),
+                            'ezstring' => new Converter\TextLineConverter(),
+                            'ezprice' => new Converter\IntegerConverter(),
+                            'ezurl' => new Converter\UrlConverter(),
+                            'ezxmltext' => new Converter\XmlTextConverter(),
+                            'ezboolean' => new Converter\CheckboxConverter(),
+                            'ezkeyword' => new Converter\KeywordConverter(),
+                            'ezauthor' => new Converter\AuthorConverter(),
+                            'ezimage' => new Converter\NullConverter(),
+                            'ezsrrating' => new Converter\NullConverter(),
+                            'ezmultioption' => new Converter\NullConverter(),
+                        )
+                    )
+                ),
+                $this->getMock( "eZ\\Publish\\Core\\Persistence\\Legacy\\Content\\Type\\Update\\Handler" )
+            );
+        }
+
+        return $this->contentTypeHandler;
+    }
+
     /**
      * Returns a content mapper mock
      *

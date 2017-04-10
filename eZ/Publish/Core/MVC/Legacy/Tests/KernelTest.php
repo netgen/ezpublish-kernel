@@ -25,6 +25,10 @@ class KernelTest extends PHPUnit_Framework_TestCase
 
     public function testRunCallbackWithException()
     {
+        if (version_compare(PHP_VERSION, '7.0.0') >= 0) {
+            $this->markTestSkipped('This will not throw an error on PHP7');
+        }
+
         $this->getKernelHandlerMock()
             ->expects( $this->any() )
             ->method( 'runCallback' )
