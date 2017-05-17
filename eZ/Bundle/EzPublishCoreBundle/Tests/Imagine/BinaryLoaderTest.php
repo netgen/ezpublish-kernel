@@ -14,6 +14,7 @@ use eZ\Publish\Core\Base\Exceptions\NotFoundException;
 use eZ\Publish\Core\IO\Values\BinaryFile;
 use eZ\Publish\Core\IO\Values\MissingBinaryFile;
 use Liip\ImagineBundle\Model\Binary;
+use Liip\ImagineBundle\Model\FileBinary;
 use PHPUnit_Framework_TestCase;
 
 class BinaryLoaderTest extends PHPUnit_Framework_TestCase
@@ -71,9 +72,37 @@ class BinaryLoaderTest extends PHPUnit_Framework_TestCase
         $this->binaryLoader->find( $path );
     }
 
-    public function testFind()
+    public function testFindLocal()
     {
         $path = 'something.jpg';
+        $mimeType = 'foo/mime-type';
+        $binaryFile = new BinaryFile( array( 'id' => $path ) );
+        $this->ioService
+            ->expects( $this->once() )
+            ->method( 'loadBinaryFile' )
+            ->with( $path )
+            ->will( $this->returnValue( $binaryFile ) );
+
+        $format = 'jpg';
+        $this->extensionGuesser
+            ->expects( $this->once() )
+            ->method( 'guess' )
+            ->with( $mimeType )
+            ->will( $this->returnValue( $format ) );
+
+        $this->ioService
+            ->expects( $this->once() )
+            ->method( 'getMimeType' )
+            ->with( $binaryFile->id )
+            ->will( $this->returnValue( $mimeType ) );
+
+        $expected = new FileBinary( $path, $mimeType, $format );
+        $this->assertEquals( $expected, $this->binaryLoader->find( $path ) );
+    }
+
+    public function testFindRemote()
+    {
+        $path = 'http://some.where/something.jpg';
         $mimeType = 'foo/mime-type';
         $content = 'some content';
         $binaryFile = new BinaryFile( array( 'id' => $path ) );

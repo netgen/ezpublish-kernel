@@ -50,37 +50,57 @@ class BinaryLoader implements LoaderInterface
         try
         {
             if (stream_is_local($path)) {
-                $binaryFile = $this->ioService->loadBinaryFile( $path );
-                // Treat a MissingBinaryFile as a not loadable file.
-                if ( $binaryFile instanceof MissingBinaryFile )
-                {
-                    throw new NotLoadableException( "Source image not found in $path" );
-                }
-
-                $mimeType = $this->ioService->getMimeType( $path );
-                return new FileBinary(
-                    $path,
-                    $mimeType,
-                    $this->extensionGuesser->guess( $mimeType )
-                );
+                return $this->findLocal($path);
             } else {
-                $binaryFile = $this->ioService->loadBinaryFile( $path );
-                // Treat a MissingBinaryFile as a not loadable file.
-                if ( $binaryFile instanceof MissingBinaryFile )
-                {
-                    throw new NotLoadableException( "Source image not found in $path" );
-                }
-                $mimeType = $this->ioService->getMimeType( $path );
-                return new Binary(
-                    $this->ioService->getFileContents( $binaryFile ),
-                    $mimeType,
-                    $this->extensionGuesser->guess( $mimeType )
-                );
+                return $this->findRemote($path);
             }
         }
         catch ( NotFoundException $e )
         {
             throw new NotLoadableException( "Source image not found in $path", 0, $e );
         }
+    }
+
+    /**
+     * @param $path
+     * @return FileBinary
+     */
+    protected function findLocal( $path )
+    {
+        $binaryFile = $this->ioService->loadBinaryFile( $path );
+        // Treat a MissingBinaryFile as a not loadable file.
+        if ( $binaryFile instanceof MissingBinaryFile )
+        {
+            throw new NotLoadableException( "Source image not found in $path" );
+        }
+
+        $mimeType = $this->ioService->getMimeType( $path );
+
+        return new FileBinary(
+            $path,
+            $mimeType,
+            $this->extensionGuesser->guess( $mimeType )
+        );
+    }
+
+    /**
+     * @param $path
+     * @return Binary
+     */
+    protected function findRemote( $path )
+    {
+        $binaryFile = $this->ioService->loadBinaryFile( $path );
+        // Treat a MissingBinaryFile as a not loadable file.
+        if ( $binaryFile instanceof MissingBinaryFile )
+        {
+            throw new NotLoadableException( "Source image not found in $path" );
+        }
+        $mimeType = $this->ioService->getMimeType( $path );
+
+        return new Binary(
+            $this->ioService->getFileContents( $binaryFile ),
+            $mimeType,
+            $this->extensionGuesser->guess( $mimeType )
+        );
     }
 }
