@@ -12,9 +12,11 @@ namespace eZ\Bundle\EzPublishCoreBundle\Imagine;
 use eZ\Publish\Core\IO\IOServiceInterface;
 use eZ\Publish\Core\Base\Exceptions\NotFoundException;
 use eZ\Publish\Core\IO\Values\MissingBinaryFile;
+use Liip\ImagineBundle\Binary\BinaryInterface;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 use Liip\ImagineBundle\Exception\Binary\Loader\NotLoadableException;
 use Liip\ImagineBundle\Model\FileBinary;
+use Liip\ImagineBundle\Model\Binary;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesserInterface;
 
 /**
@@ -39,23 +41,42 @@ class BinaryLoader implements LoaderInterface
         $this->extensionGuesser = $extensionGuesser;
     }
 
+    /**
+     * @param $path
+     * @return BinaryInterface
+     */
     public function find( $path )
     {
         try
         {
-            $binaryFile = $this->ioService->loadBinaryFile( $path );
-            // Treat a MissingBinaryFile as a not loadable file.
-            if ( $binaryFile instanceof MissingBinaryFile )
-            {
-                throw new NotLoadableException( "Source image not found in $path" );
-            }
+            if (stream_is_local($path)) {
+                $binaryFile = $this->ioService->loadBinaryFile( $path );
+                // Treat a MissingBinaryFile as a not loadable file.
+                if ( $binaryFile instanceof MissingBinaryFile )
+                {
+                    throw new NotLoadableException( "Source image not found in $path" );
+                }
 
-            $mimeType = $this->ioService->getMimeType( $path );
-            return new FileBinary(
-                $path,
-                $mimeType,
-                $this->extensionGuesser->guess( $mimeType )
-            );
+                $mimeType = $this->ioService->getMimeType( $path );
+                return new FileBinary(
+                    $path,
+                    $mimeType,
+                    $this->extensionGuesser->guess( $mimeType )
+                );
+            } else {
+                $binaryFile = $this->ioService->loadBinaryFile( $path );
+                // Treat a MissingBinaryFile as a not loadable file.
+                if ( $binaryFile instanceof MissingBinaryFile )
+                {
+                    throw new NotLoadableException( "Source image not found in $path" );
+                }
+                $mimeType = $this->ioService->getMimeType( $path );
+                return new Binary(
+                    $this->ioService->getFileContents( $binaryFile ),
+                    $mimeType,
+                    $this->extensionGuesser->guess( $mimeType )
+                );
+            }
         }
         catch ( NotFoundException $e )
         {
