@@ -72,7 +72,7 @@ class BinaryLoaderTest extends PHPUnit_Framework_TestCase
         $this->binaryLoader->find( $path );
     }
 
-    public function testFindLocal()
+    public function testFind()
     {
         $path = 'something.jpg';
         $mimeType = 'foo/mime-type';
@@ -97,41 +97,6 @@ class BinaryLoaderTest extends PHPUnit_Framework_TestCase
             ->will( $this->returnValue( $mimeType ) );
 
         $expected = new FileBinary( $path, $mimeType, $format );
-        $this->assertEquals( $expected, $this->binaryLoader->find( $path ) );
-    }
-
-    public function testFindRemote()
-    {
-        $path = 'http://some.where/something.jpg';
-        $mimeType = 'foo/mime-type';
-        $content = 'some content';
-        $binaryFile = new BinaryFile( array( 'id' => $path ) );
-        $this->ioService
-            ->expects( $this->once() )
-            ->method( 'loadBinaryFile' )
-            ->with( $path )
-            ->will( $this->returnValue( $binaryFile ) );
-
-        $format = 'jpg';
-        $this->extensionGuesser
-            ->expects( $this->once() )
-            ->method( 'guess' )
-            ->with( $mimeType )
-            ->will( $this->returnValue( $format ) );
-
-        $this->ioService
-            ->expects( $this->once() )
-            ->method( 'getFileContents' )
-            ->with( $binaryFile )
-            ->will( $this->returnValue( $content ) );
-
-        $this->ioService
-            ->expects( $this->once() )
-            ->method( 'getMimeType' )
-            ->with( $binaryFile->id )
-            ->will( $this->returnValue( $mimeType ) );
-
-        $expected = new Binary( $content, $mimeType, $format );
         $this->assertEquals( $expected, $this->binaryLoader->find( $path ) );
     }
 }
