@@ -52,7 +52,9 @@ class BinaryLoader implements LoaderInterface
 
             $mimeType = $this->ioService->getMimeType( $path );
 
-            return new FileBinary('var/storage/images/'.$path, $mimeType, $this->extensionGuesser->guess( $mimeType ));
+            $path = ltrim($path, '/'); //make relative path!
+
+            return new FileBinary($path, $mimeType, $this->extensionGuesser->guess( $mimeType ));
         }
         catch ( NotFoundException $e )
         {
