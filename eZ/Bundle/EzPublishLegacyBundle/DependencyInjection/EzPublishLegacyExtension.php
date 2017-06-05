@@ -57,7 +57,7 @@ class EzPublishLegacyExtension extends Extension
         $processor = new ConfigurationProcessor( $container, 'ezpublish_legacy' );
         $processor->mapConfig(
             $config,
-            function ( array &$scopeSettings, $currentScope, ContextualizerInterface $contextualizerInterface )
+            function ( array $scopeSettings, $currentScope, ContextualizerInterface $contextualizerInterface )
             {
                 if ( isset( $scopeSettings['templating']['view_layout'] ) )
                 {

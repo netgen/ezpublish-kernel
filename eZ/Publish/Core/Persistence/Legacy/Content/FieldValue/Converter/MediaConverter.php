@@ -14,14 +14,14 @@ use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
 use eZ\Publish\Core\FieldType\FieldSettings;
 
-class Media extends BinaryFile
+class MediaConverter extends BinaryFileConverter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return Image
+     * @return MediaConverter
      */
     public static function create()
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Rating converter
+ * File containing the Date field value converter class
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -14,15 +14,21 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
+use eZ\Publish\Core\FieldType\Date\Type as DateType;
+use eZ\Publish\Core\FieldType\FieldSettings;
+use DateTime;
 
-class Rating implements Converter
+/**
+ * Date field value converter class
+ */
+class DateConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return Rating
+     * @return \eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\DateConverter
      */
     public static function create()
     {
@@ -37,7 +43,8 @@ class Rating implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
-        $storageFieldValue->dataInt = $value->data ? 1 : null;
+        $storageFieldValue->dataInt = ( $value->data !== null ? $value->data["timestamp"] : null );
+        $storageFieldValue->sortKeyInt = (int)$value->sortKey;
     }
 
     /**
@@ -48,7 +55,16 @@ class Rating implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        $fieldValue->data = (bool)$value->dataInt;
+        if ( $value->dataInt === null || $value->dataInt == 0 )
+        {
+            return;
+        }
+
+        $fieldValue->data = array(
+            "timestamp" => $value->dataInt,
+            "rfc850" => null,
+        );
+        $fieldValue->sortKey = $value->sortKeyInt;
     }
 
     /**
@@ -59,6 +75,7 @@ class Rating implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
+        $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings["defaultType"];
     }
 
     /**
@@ -69,7 +86,28 @@ class Rating implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
-        $fieldDef->defaultValue->data = false;
+        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
+            array(
+                "defaultType" => $storageDef->dataInt1
+            )
+        );
+
+        // Building default value
+        switch ( $fieldDef->fieldTypeConstraints->fieldSettings["defaultType"] )
+        {
+            case DateType::DEFAULT_CURRENT_DATE:
+                $dateTime = new DateTime();
+                $dateTime->setTime( 0, 0, 0 );
+                $data = array(
+                    "timestamp" => $dateTime->getTimestamp(),
+                    "rfc850" => null,
+                );
+                break;
+            default:
+                $data = null;
+        }
+
+        $fieldDef->defaultValue->data = $data;
     }
 
     /**
@@ -83,6 +121,6 @@ class Rating implements Converter
      */
     public function getIndexColumn()
     {
-        return false;
+        return "sort_key_int";
     }
 }

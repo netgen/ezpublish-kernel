@@ -16,6 +16,13 @@ use eZ\Publish\Core\MVC\Legacy\Event\PreBuildKernelWebHandlerEvent;
 
 class LegacyMapperTest extends LegacyBasedTestCase
 {
+    protected function setUp()
+    {
+        \PHPUnit_Framework_Error_Warning::$enabled = false;
+        \PHPUnit_Framework_Error_Deprecated::$enabled = false;
+        parent::setUp();
+    }
+
     /**
      * @dataProvider siteAccessMatchProvider
      */

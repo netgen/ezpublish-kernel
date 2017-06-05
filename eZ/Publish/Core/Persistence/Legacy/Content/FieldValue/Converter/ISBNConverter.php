@@ -1,10 +1,10 @@
 <?php
 /**
- * File containing the Author converter
+ * File containing the ISBN converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
- * @version //autogentag//
+ * @version 
  */
 
 namespace eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter;
@@ -14,16 +14,16 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
-use DOMDocument;
+use eZ\Publish\Core\FieldType\FieldSettings;
 
-class Author implements Converter
+class ISBNConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return Author
+     * @return ISBN
      */
     public static function create()
     {
@@ -38,7 +38,8 @@ class Author implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
-        $storageFieldValue->dataText = $this->generateXmlString( $value->data );
+        $storageFieldValue->dataText = $value->data;
+        $storageFieldValue->sortKeyString = $value->sortKey;
     }
 
     /**
@@ -49,7 +50,8 @@ class Author implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        $fieldValue->data = $this->restoreValueFromXmlString( $value->dataText );
+        $fieldValue->data = $value->dataText;
+        $fieldValue->sortKey = $value->sortKeyString;
     }
 
     /**
@@ -60,7 +62,16 @@ class Author implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
-        // Nothing to store
+        if ( isset( $fieldDef->fieldTypeConstraints->fieldSettings["isISBN13"] ) )
+        {
+            $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings["isISBN13"];
+        }
+        else
+        {
+            $storageDef->dataInt1 = 1;
+        }
+
+        $storageDef->dataText1 = $fieldDef->defaultValue->data;
     }
 
     /**
@@ -71,7 +82,14 @@ class Author implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
-        $fieldDef->defaultValue->data = array();
+        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
+            array(
+                "isISBN13" => !empty( $storageDef->dataInt1 ) ? (bool)$storageDef->dataInt1 : true
+            )
+        );
+
+        $fieldDef->defaultValue->data = $storageDef->dataText1 ?: null;
+        $fieldDef->defaultValue->sortKey = $storageDef->dataText1 ?: "";
     }
 
     /**
@@ -85,63 +103,6 @@ class Author implements Converter
      */
     public function getIndexColumn()
     {
-        return false;
-    }
-
-    /**
-     * Generates XML string from $authorValue to be stored in storage engine
-     *
-     * @param array $authorValue
-     *
-     * @return string The generated XML string
-     */
-    private function generateXmlString( array $authorValue )
-    {
-        $doc = new DOMDocument( '1.0', 'utf-8' );
-
-        $root = $doc->createElement( 'ezauthor' );
-        $doc->appendChild( $root );
-
-        $authors = $doc->createElement( 'authors' );
-        $root->appendChild( $authors );
-
-        foreach ( $authorValue as $author )
-        {
-            $authorNode = $doc->createElement( 'author' );
-            $authorNode->setAttribute( 'id', $author["id"] );
-            $authorNode->setAttribute( 'name', $author["name"] );
-            $authorNode->setAttribute( 'email', $author["email"] );
-            $authors->appendChild( $authorNode );
-            unset( $authorNode );
-        }
-
-        return $doc->saveXML();
-    }
-
-    /**
-     * Restores an author Value object from $xmlString
-     *
-     * @param string $xmlString XML String stored in storage engine
-     *
-     * @return \eZ\Publish\Core\FieldType\Author\Value
-     */
-    private function restoreValueFromXmlString( $xmlString )
-    {
-        $dom = new DOMDocument( '1.0', 'utf-8' );
-        $authors = array();
-
-        if ( $dom->loadXML( $xmlString ) === true )
-        {
-            foreach ( $dom->getElementsByTagName( 'author' ) as $author )
-            {
-                $authors[] = array(
-                    'id' => $author->getAttribute( 'id' ),
-                    'name' => $author->getAttribute( 'name' ),
-                    'email' => $author->getAttribute( 'email' )
-                );
-            }
-        }
-
-        return $authors;
+        return 'sort_key_string';
     }
 }
