@@ -14,6 +14,7 @@ use eZ\Publish\Core\Base\Exceptions\NotFoundException;
 use eZ\Publish\Core\IO\Values\BinaryFile;
 use eZ\Publish\Core\IO\Values\MissingBinaryFile;
 use Liip\ImagineBundle\Model\Binary;
+use Liip\ImagineBundle\Model\FileBinary;
 use PHPUnit_Framework_TestCase;
 
 class BinaryLoaderTest extends PHPUnit_Framework_TestCase
@@ -75,8 +76,7 @@ class BinaryLoaderTest extends PHPUnit_Framework_TestCase
     {
         $path = 'something.jpg';
         $mimeType = 'foo/mime-type';
-        $content = 'some content';
-        $binaryFile = new BinaryFile( array( 'id' => $path ) );
+        $binaryFile = new BinaryFile( array( 'id' => $path, 'uri' => '/' . $path ) );
         $this->ioService
             ->expects( $this->once() )
             ->method( 'loadBinaryFile' )
@@ -92,17 +92,11 @@ class BinaryLoaderTest extends PHPUnit_Framework_TestCase
 
         $this->ioService
             ->expects( $this->once() )
-            ->method( 'getFileContents' )
-            ->with( $binaryFile )
-            ->will( $this->returnValue( $content ) );
-
-        $this->ioService
-            ->expects( $this->once() )
             ->method( 'getMimeType' )
             ->with( $binaryFile->id )
             ->will( $this->returnValue( $mimeType ) );
 
-        $expected = new Binary( $content, $mimeType, $format );
+        $expected = new FileBinary( $path, $mimeType, $format );
         $this->assertEquals( $expected, $this->binaryLoader->find( $path ) );
     }
 }

@@ -14,7 +14,7 @@ use eZ\Publish\Core\Base\Exceptions\NotFoundException;
 use eZ\Publish\Core\IO\Values\MissingBinaryFile;
 use Liip\ImagineBundle\Binary\Loader\LoaderInterface;
 use Liip\ImagineBundle\Exception\Binary\Loader\NotLoadableException;
-use Liip\ImagineBundle\Model\Binary;
+use Liip\ImagineBundle\Model\FileBinary;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesserInterface;
 
 /**
@@ -51,11 +51,10 @@ class BinaryLoader implements LoaderInterface
             }
 
             $mimeType = $this->ioService->getMimeType( $path );
-            return new Binary(
-                $this->ioService->getFileContents( $binaryFile ),
-                $mimeType,
-                $this->extensionGuesser->guess( $mimeType )
-            );
+
+            $path = ltrim($binaryFile->uri, '/'); //make relative path!
+
+            return new FileBinary($path, $mimeType, $this->extensionGuesser->guess( $mimeType ));
         }
         catch ( NotFoundException $e )
         {
