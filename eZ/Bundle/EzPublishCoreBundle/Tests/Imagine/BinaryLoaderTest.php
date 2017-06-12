@@ -76,7 +76,7 @@ class BinaryLoaderTest extends PHPUnit_Framework_TestCase
     {
         $path = 'something.jpg';
         $mimeType = 'foo/mime-type';
-        $binaryFile = new BinaryFile( array( 'id' => $path ) );
+        $binaryFile = new BinaryFile( array( 'id' => $path, 'uri' => '/' . $path ) );
         $this->ioService
             ->expects( $this->once() )
             ->method( 'loadBinaryFile' )
