@@ -1,6 +1,6 @@
 <?php
 /**
- * File containing the Date field value converter class
+ * File containing the Relation converter
  *
  * @copyright Copyright (C) eZ Systems AS. All rights reserved.
  * @license For full copyright and license information view LICENSE file distributed with this source code.
@@ -14,21 +14,15 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
-use eZ\Publish\Core\FieldType\Date\Type as DateType;
-use eZ\Publish\Core\FieldType\FieldSettings;
-use DateTime;
 
-/**
- * Date field value converter class
- */
-class Date implements Converter
+class RelationConverter implements Converter
 {
     /**
      * Factory for current class
      *
      * @note Class should instead be configured as service if it gains dependencies.
      *
-     * @return \eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Date
+     * @return Url
      */
     public static function create()
     {
@@ -43,7 +37,9 @@ class Date implements Converter
      */
     public function toStorageValue( FieldValue $value, StorageFieldValue $storageFieldValue )
     {
-        $storageFieldValue->dataInt = ( $value->data !== null ? $value->data["timestamp"] : null );
+        $storageFieldValue->dataInt = !empty( $value->data['destinationContentId'] )
+            ? $value->data['destinationContentId']
+            : null;
         $storageFieldValue->sortKeyInt = (int)$value->sortKey;
     }
 
@@ -55,16 +51,10 @@ class Date implements Converter
      */
     public function toFieldValue( StorageFieldValue $value, FieldValue $fieldValue )
     {
-        if ( $value->dataInt === null || $value->dataInt == 0 )
-        {
-            return;
-        }
-
         $fieldValue->data = array(
-            "timestamp" => $value->dataInt,
-            "rfc850" => null,
+            "destinationContentId" => $value->dataInt ?: null,
         );
-        $fieldValue->sortKey = $value->sortKeyInt;
+        $fieldValue->sortKey = (int)$value->sortKeyInt;
     }
 
     /**
@@ -75,7 +65,11 @@ class Date implements Converter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
-        $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings["defaultType"];
+        // Selection method, 0 = browse, 1 = dropdown
+        $storageDef->dataInt1 = $fieldDef->fieldTypeConstraints->fieldSettings['selectionMethod'];
+
+        // Selection root, location ID
+        $storageDef->dataInt2 = $fieldDef->fieldTypeConstraints->fieldSettings['selectionRoot'];
     }
 
     /**
@@ -86,28 +80,15 @@ class Date implements Converter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
-        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
-            array(
-                "defaultType" => $storageDef->dataInt1
-            )
-        );
+        // Selection method, 0 = browse, 1 = dropdown
+        $fieldDef->fieldTypeConstraints->fieldSettings['selectionMethod'] = $storageDef->dataInt1;
 
-        // Building default value
-        switch ( $fieldDef->fieldTypeConstraints->fieldSettings["defaultType"] )
-        {
-            case DateType::DEFAULT_CURRENT_DATE:
-                $dateTime = new DateTime();
-                $dateTime->setTime( 0, 0, 0 );
-                $data = array(
-                    "timestamp" => $dateTime->getTimestamp(),
-                    "rfc850" => null,
-                );
-                break;
-            default:
-                $data = null;
-        }
+        // Selection root, location ID
 
-        $fieldDef->defaultValue->data = $data;
+        $fieldDef->fieldTypeConstraints->fieldSettings['selectionRoot'] =
+            $storageDef->dataInt2 === 0
+            ? ''
+            : $storageDef->dataInt2;
     }
 
     /**
@@ -117,10 +98,10 @@ class Date implements Converter
      * "sort_key_int" or "sort_key_string". This column is then used for
      * filtering and sorting for this type.
      *
-     * @return string
+     * @return false
      */
     public function getIndexColumn()
     {
-        return "sort_key_int";
+        return 'sort_key_int';
     }
 }

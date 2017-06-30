@@ -23,10 +23,10 @@ use eZ\Publish\Core\Persistence\Legacy\Content\Search\Common\Gateway\CriterionHa
 use eZ\Publish\Core\Persistence\Legacy\Content\Search\Location\Gateway\SortClauseHandler as LocationSortClauseHandler;
 use eZ\Publish\Core\Persistence\Legacy\Content\Search\Common\Gateway\SortClauseHandler as CommonSortClauseHandler;
 use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\ConverterRegistry;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\DateAndTime;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Integer;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\TextLine;
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Url;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\DateAndTimeConverter;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\IntegerConverter;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\TextLineConverter;
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\UrlConverter;
 
 /**
  * Test case for LocationSearchHandler
@@ -135,11 +135,11 @@ class LocationSearchHandlerTest extends LanguageAwareTestCase
                             $this->getDatabaseHandler(),
                             new ConverterRegistry(
                                 array(
-                                    'ezdatetime' => new DateAndTime(),
-                                    'ezinteger' => new Integer(),
-                                    'ezstring' => new TextLine(),
-                                    'ezprice' => new Integer(),
-                                    'ezurl' => new Url()
+                                    'ezdatetime' => new DateAndTimeConverter(),
+                                    'ezinteger' => new IntegerConverter(),
+                                    'ezstring' => new TextLineConverter(),
+                                    'ezprice' => new IntegerConverter(),
+                                    'ezurl' => new UrlConverter()
                                 )
                             ),
                             new CommonCriterionHandler\FieldValue\Converter(
