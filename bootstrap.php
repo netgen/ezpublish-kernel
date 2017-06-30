@@ -12,6 +12,10 @@
 use eZ\Publish\Core\MVC\Legacy\Kernel as LegacyKernel;
 use eZ\Publish\Core\MVC\Legacy\Kernel\CLIHandler as LegacyKernelCLI;
 
+if (!class_exists('PHPUnit\Framework\TestCase')) {
+    class_alias('PHPUnit_Framework_TestCase', 'PHPUnit\Framework\TestCase');
+}
+
 // Get global config.php settings
 if ( !file_exists( __DIR__ . '/config.php' ) )
 {
