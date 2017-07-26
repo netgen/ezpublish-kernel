@@ -81,7 +81,7 @@ class SiteAccess extends ContainerAware implements EventSubscriberInterface
         }
 
         // uri_part
-        $pathinfo = rawurldecode( str_replace( $request->attributes->get( 'viewParametersString' ), '', $request->getPathInfo() ) );
+        $pathinfo = str_replace( $request->attributes->get( 'viewParametersString' ), '', rawurldecode( $request->getPathInfo() ) );
         $semanticPathinfo = $request->attributes->get( 'semanticPathinfo', $pathinfo );
         if ( $pathinfo != $semanticPathinfo )
         {
