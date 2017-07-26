@@ -14,6 +14,8 @@ use eZ\Publish\Core\IO\MetadataHandler;
 use eZ\Publish\Core\IO\Values\BinaryFile;
 use eZ\Publish\Core\IO\Values\BinaryFileCreateStruct;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentException;
+use eZ\Publish\Core\IO\Values\MissingBinaryFile;
+use League\Flysystem\FileNotFoundException;
 
 /**
  * Legacy Image IOService
@@ -132,16 +134,21 @@ class Legacy implements IOServiceInterface
         // If the id is an internal (absolute) path to a draft image, use the draft service to get external path & load
         if ( $this->isDraftImagePath( $binaryFileId ) )
         {
-            return $this->draftIOService->loadBinaryFile( $this->draftIOService->getExternalPath( $binaryFileId ) );
+            $binaryFileId = $this->draftIOService->getExternalPath( $binaryFileId );
         }
-
         // If the id is an internal path (absolute) to a published image, replace with the internal path
         if ( $this->isPublishedImagePath( $binaryFileId ) )
         {
             $binaryFileId = $this->publishedIOService->getExternalPath( $binaryFileId );
         }
 
-        return $this->publishedIOService->loadBinaryFile( $binaryFileId );
+        $binaryFile = $this->publishedIOService->loadBinaryFile( $binaryFileId );
+        if ($binaryFile instanceof MissingBinaryFile) {
+            $binaryFile = $this->draftIOService->loadBinaryFile( $binaryFileId );
+
+        }
+        return $binaryFile;
+
     }
 
     /**
@@ -187,7 +194,7 @@ class Legacy implements IOServiceInterface
         // If the id is an internal (absolute) path to a draft image, use the draft service to get external path & load
         if ( $this->isDraftImagePath( $binaryFileId ) )
         {
-            return $this->draftIOService->getMimeType( $this->draftIOService->getExternalPath( $binaryFileId ) );
+            $binaryFileId = $this->draftIOService->getExternalPath( $binaryFileId );
         }
 
         // If the id is an internal path (absolute) to a published image, replace with the internal path
@@ -196,7 +203,15 @@ class Legacy implements IOServiceInterface
             $binaryFileId = $this->publishedIOService->getExternalPath( $binaryFileId );
         }
 
-        return $this->publishedIOService->getMimeType( $binaryFileId );
+        try {
+            $mimeType = $this->publishedIOService->getMimeType( $binaryFileId );
+
+        } catch (FileNotFoundException $e)
+        {
+            $mimeType = $this->draftIOService->getMimeType( $binaryFileId );
+        }
+        return $mimeType;
+
     }
 
     public function getFileInputStream( BinaryFile $binaryFile )
