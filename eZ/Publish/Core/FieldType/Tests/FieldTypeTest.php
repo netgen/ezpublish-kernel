@@ -431,7 +431,7 @@ abstract class FieldTypeTest extends PHPUnit_Framework_TestCase
         return array(
             array(
                 array(),
-                $this->getMock( "eZ\\Publish\\SPI\\FieldType\\Value" ),
+                $this->createMock( "eZ\\Publish\\SPI\\FieldType\\Value" ),
             )
         );
     }
@@ -505,7 +505,7 @@ abstract class FieldTypeTest extends PHPUnit_Framework_TestCase
         return array(
             array(
                 array(),
-                $this->getMock( "eZ\\Publish\\SPI\\FieldType\\Value" ),
+                $this->createMock( "eZ\\Publish\\SPI\\FieldType\\Value" ),
                 array(),
             )
         );
@@ -960,7 +960,7 @@ abstract class FieldTypeTest extends PHPUnit_Framework_TestCase
         $fieldType = $this->getFieldTypeUnderTest();
 
         /** @var \eZ\Publish\API\Repository\Values\ContentType\FieldDefinition|\PHPUnit_Framework_MockObject_MockObject $fieldDefinitionMock */
-        $fieldDefinitionMock = $this->getMock(
+        $fieldDefinitionMock = $this->createMock(
             "eZ\\Publish\\API\\Repository\\Values\\ContentType\\FieldDefinition"
         );
 
