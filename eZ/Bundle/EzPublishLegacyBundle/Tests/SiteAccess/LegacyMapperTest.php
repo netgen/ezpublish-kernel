@@ -50,25 +50,25 @@ class LegacyMapperTest extends LegacyBasedTestCase
     /**
      * @dataProvider siteAccessParamStringMatchProvider
      */
-    public function testOnSiteAccessMatchUriPart($pathinfo, $semanticPathinfo, $viewParametersString, SiteAccess $siteaccess, $expectedAccess)
+    public function testOnSiteAccessMatchUriPart( $pathinfo, $semanticPathinfo, $viewParametersString, SiteAccess $siteaccess, $expectedAccess )
     {
         $container = $this->getContainerMock();
         $container
-            ->expects($this->exactly(1))
-            ->method('get')
-            ->with('ezpublish.siteaccess')
-            ->will($this->returnValue($siteaccess));
+            ->expects( $this->exactly( 1 ) )
+            ->method( 'get' )
+            ->with( 'ezpublish.siteaccess' )
+            ->will( $this->returnValue( $siteaccess ) );
 
         $request = $this->getRequestMock();
         $request
-            ->expects($this->any())
-            ->method('getPathInfo')
-            ->will($this->returnValue($pathinfo));
-        $request->attributes->set('semanticPathinfo', $semanticPathinfo);
-        $request->attributes->set('viewParametersString', $viewParametersString);
+            ->expects( $this->any() )
+            ->method( 'getPathInfo' )
+            ->will( $this->returnValue( $pathinfo ) );
+        $request->attributes->set( 'semanticPathinfo', $semanticPathinfo );
+        $request->attributes->set( 'viewParametersString', $viewParametersString );
 
         $mapper = new LegacyMapper();
-        $mapper->setContainer($container);
+        $mapper->setContainer( $container );
         $bag = new \Symfony\Component\HttpFoundation\ParameterBag();
         $mapper->onBuildKernelWebHandler(
             new PreBuildKernelWebHandlerEvent(
@@ -76,7 +76,7 @@ class LegacyMapperTest extends LegacyBasedTestCase
                 $request
             )
         );
-        self::assertSame($expectedAccess, $bag->get('siteaccess'));
+        self::assertSame( $expectedAccess, $bag->get( 'siteaccess' ) );
     }
 
     public function siteAccessMatchProvider()
@@ -242,7 +242,7 @@ class LegacyMapperTest extends LegacyBasedTestCase
                 '/some/pathinfo/(param)/foo',
                 '/some/pathinfo',
                 '/(param)/foo',
-                new SiteAccess('foo', 'default'),
+                new SiteAccess( 'foo', 'default' ),
                 array(
                     'name' => 'foo',
                     'type' => 1,
@@ -253,7 +253,7 @@ class LegacyMapperTest extends LegacyBasedTestCase
                 '/some/pathinfo/(param)/foo/b%C3%A4r',
                 '/some/pathinfo',
                 '/(param)/foo/bär',
-                new SiteAccess('foo', 'default'),
+                new SiteAccess( 'foo', 'default' ),
                 array(
                     'name' => 'foo',
                     'type' => 1,
@@ -264,7 +264,7 @@ class LegacyMapperTest extends LegacyBasedTestCase
                 '/some/p%C3%A4thinfo/(param)/foo/b%C3%A4r',
                 '/some/päthinfo',
                 '/(param)/foo/bär',
-                new SiteAccess('foo', 'default'),
+                new SiteAccess( 'foo', 'default' ),
                 array(
                     'name' => 'foo',
                     'type' => 1,
