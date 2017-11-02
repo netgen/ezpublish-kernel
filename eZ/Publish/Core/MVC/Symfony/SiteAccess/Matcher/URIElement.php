@@ -142,7 +142,7 @@ class URIElement implements VersatileMatcher, URILexer
         }
         else if ( strpos( $uri, $uriElements ) === 0 )
         {
-            sscanf( $uri, "$uriElements%s", $uri );
+            $uri = mb_substr( $uri, mb_strlen( $uriElements ) );
         }
         return $uri;
     }
