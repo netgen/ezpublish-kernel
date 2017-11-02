@@ -19,7 +19,7 @@ abstract class UserCreateStruct extends ContentCreateStruct
     /**
      * User login
      *
-     * @required
+     * Required.
      *
      * @var string
      */
@@ -28,7 +28,7 @@ abstract class UserCreateStruct extends ContentCreateStruct
     /**
      * User E-Mail address
      *
-     * @required
+     * Required.
      *
      * @var string
      */
@@ -37,7 +37,7 @@ abstract class UserCreateStruct extends ContentCreateStruct
     /**
      * The plain password
      *
-     * @required
+     * Required.
      *
      * @var string
      */

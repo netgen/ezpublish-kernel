@@ -19,7 +19,7 @@ class FieldDefinitionCreateStruct extends ValueObject
     /**
      * String identifier of the field type
      *
-     * @required
+     * Required.
      *
      * @var string
      */
@@ -30,7 +30,7 @@ class FieldDefinitionCreateStruct extends ValueObject
      *
      * Needs to be unique within the context of the Content Type this is added to.
      *
-     * @required
+     * Required.
      *
      * @var string
      */
