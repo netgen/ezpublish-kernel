@@ -89,10 +89,10 @@ class MapLocationDistanceRange extends MapLocation
         foreach ( $names as $name )
         {
             // @todo in future it should become possible to specify ranges directly on the filter (donut shape)
-            $query = "{!geofilt sfield={$name} pt={$location->latitude},{$location->longitude} d={$end}}";
+            $query = sprintf('{!geofilt sfield=%s pt=%F,%F d=%s}', $name, $location->latitude, $location->longitude, $end);
             if ( $start !== null )
             {
-                $query = "{!frange l={$start}}{$query}";
+                $query = sprintf("{!frange l=%F}{$query}", $start);
             }
 
             // @todo: fix for SOLR version < 4.1.0, see https://issues.apache.org/jira/browse/SOLR-4093
